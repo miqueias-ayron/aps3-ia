@@ -40,6 +40,8 @@ Imprime, para cada tabuleiro (4, 5, 6, 7 e 8), o caminho encontrado por `BuscaPr
 
 ### Visualização (pygame)
 
+Extra além do pedido pela APS, para navegar visualmente entre as soluções. (Desenvolvida com auxílio de IA).
+
 ```bash
 pip install -r requirements.txt
 python src/n_queens_pygame.py

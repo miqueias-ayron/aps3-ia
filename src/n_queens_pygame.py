@@ -1,5 +1,8 @@
 """Visualizacao com pygame das solucoes do problema das N-rainhas.
 
+Extra alem do pedido pela APS, para navegar visualmente entre as solucoes.
+(Desenvolvida com auxilio de IA).
+
 Solucoes obtidas a partir de QueensState (aigyminsper), definida em n_queens_aigym.py.
 
 Controles:
@@ -41,6 +44,7 @@ COLOR_DOT_OFF = (60, 64, 78)
 
 
 def build_fonts():
+    """Cria as fontes usadas na tela (titulo, subtitulo, dicas de controle)."""
     return {
         "title": pygame.font.SysFont("segoeui", 26, bold=True),
         "subtitle": pygame.font.SysFont("segoeui", 17),
@@ -50,6 +54,7 @@ def build_fonts():
 
 
 def draw_header(screen, fonts, window_width, n, size_index, solution_index, total_solutions):
+    """Desenha a faixa do topo: titulo, contador de solucao e os pontinhos de tamanho de tabuleiro."""
     header_rect = pygame.Rect(0, 0, window_width, HEADER_HEIGHT)
     pygame.draw.rect(screen, COLOR_HEADER_BG, header_rect)
     pygame.draw.line(screen, COLOR_DIVIDER, (0, HEADER_HEIGHT), (window_width, HEADER_HEIGHT), 2)
@@ -79,6 +84,7 @@ def draw_header(screen, fonts, window_width, n, size_index, solution_index, tota
 
 
 def draw_footer(screen, fonts, window_width, window_height):
+    """Desenha a faixa de baixo com a lista de controles do teclado."""
     footer_rect = pygame.Rect(0, window_height - FOOTER_HEIGHT, window_width, FOOTER_HEIGHT)
     pygame.draw.rect(screen, COLOR_FOOTER_BG, footer_rect)
     pygame.draw.line(
@@ -98,10 +104,11 @@ def draw_footer(screen, fonts, window_width, window_height):
 
 
 def draw_board(screen, fonts, n, solution, size_index, solution_index, total_solutions, window_width, window_height):
+    """Desenha a tela inteira: fundo, tabuleiro NxN, rainhas da solucao atual, header e footer."""
     screen.fill(COLOR_WINDOW_BG)
 
     board_pixels = n * CELL_SIZE
-    origin_x = (window_width - board_pixels) // 2
+    origin_x = (window_width - board_pixels) // 2  # centraliza o tabuleiro na janela
     origin_y = HEADER_HEIGHT + BOARD_TOP_GAP
 
     border_rect = pygame.Rect(origin_x - 4, origin_y - 4, board_pixels + 8, board_pixels + 8)
@@ -109,11 +116,13 @@ def draw_board(screen, fonts, n, solution, size_index, solution_index, total_sol
 
     for row in range(n):
         for col in range(n):
+            # (row + col) par/impar alterna a cor, como um tabuleiro de xadrez de verdade.
             color = COLOR_BOARD_LIGHT if (row + col) % 2 == 0 else COLOR_BOARD_DARK
             rect = pygame.Rect(origin_x + col * CELL_SIZE, origin_y + row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
             pygame.draw.rect(screen, color, rect)
 
     queen_radius = int(CELL_SIZE * 0.32)
+    # solution[row] = coluna da rainha naquela linha, mesma representacao de QueensState.rainhas.
     for row, col in enumerate(solution):
         center = (origin_x + col * CELL_SIZE + CELL_SIZE // 2, origin_y + row * CELL_SIZE + CELL_SIZE // 2)
         pygame.draw.circle(screen, COLOR_QUEEN, center, queen_radius)
@@ -124,6 +133,7 @@ def draw_board(screen, fonts, n, solution, size_index, solution_index, total_sol
 
 
 def main():
+    """Abre a janela e roda o loop principal: le teclado e redesenha a tela."""
     pygame.init()
     pygame.display.set_caption("N-Rainhas - Visualizacao (aigyminsper)")
 
@@ -135,6 +145,8 @@ def main():
     fonts = build_fonts()
     clock = pygame.time.Clock()
 
+    # Resolve todos os tamanhos uma unica vez no inicio (solve_all vem de
+    # n_queens_aigym.py) e guarda num dict, pra nao recalcular a cada tecla.
     solutions_cache = {n: solve_all(n) for n in BOARD_SIZES}
 
     size_index = 0
@@ -152,6 +164,7 @@ def main():
                 if event.key == pygame.K_ESCAPE:
                     running = False
                 elif event.key in (pygame.K_RIGHT, pygame.K_SPACE):
+                    # % len(solutions): passa da ultima solucao e volta pra primeira.
                     solution_index = (solution_index + 1) % len(solutions)
                 elif event.key == pygame.K_LEFT:
                     solution_index = (solution_index - 1) % len(solutions)
