@@ -25,8 +25,6 @@ Implementação em Python usando **Busca em Profundidade** (`BuscaProfundidade`)
 src/
   n_queens_aigym.py   # QueensState (interface State da aigyminsper) + BuscaProfundidade
   n_queens_pygame.py  # visualização gráfica das soluções (pygame)
-tests/
-  test_n_queens_aigym.py  # testes de validação das soluções
 ```
 
 O estado do tabuleiro (`QueensState`) implementa a interface `State` da lib (`successors`, `is_goal`, `cost`, `env`, `description`); a poda de rainhas que se atacam já acontece dentro de `successors()`, então a busca em profundidade encontra a primeira solução completa em profundidade N. `n_queens_pygame.py` reaproveita esse mesmo `QueensState` para enumerar todas as soluções e navegar entre elas.
